@@ -1,4 +1,6 @@
 var currentDay = document.querySelector("#currentDay");
+var listToDo = document.getElementById("#listToDo");
+
 
 // creating a continous clock for currentDay
 setInterval(function(){
@@ -7,3 +9,10 @@ setInterval(function(){
     currentDay.textContent = timeReadable;
 }, 1000);
 
+function enterText(){
+
+}
+
+
+// setup rows to have enterable text
+//listToDo.addEventListener('click', enterText);
