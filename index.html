@@ -25,9 +25,8 @@
 
       <div class="w-100">
         <div class="card">  
-          <h4 class="card-header bg-dark text-light d-flex align-items-center">
-          9 am <button id="create-task" class="btn btn-block btn-add bg-danger">
-          <span class="oi oi-plus mr-2"></span>Add Task
+          <h4 class="card-header bg-dark text-light d-flex align-items-center"> 9 am <button id="create-task" class="btn btn-block btn-add bg-danger">
+          <span class="oi oi-plus mr-2"></span><input type = "text">Add Task
           </button>
           </h4>
           <ul id="list-toDo" class="list-group list-group-flush"></ul>
@@ -36,11 +35,13 @@
 
             
       <div class="w-100"> 
-        <div class="card">  
+        <div class="card"> 
           <h4 class="card-header bg-dark text-light d-flex align-items-center">
-          10 am <button id="create-task" class="btn btn-block btn-add bg-danger">
+          10 am<div class="w-100"><input type = "text">
+          <button id="10amtask" class="btn btn-block btn-add bg-danger">
           <span class="oi oi-plus mr-2"></span>Add Task
           </button>
+          </div>
           </h4>
           <ul id="list-toDo" class="list-group list-group-flush"></ul>
         </div>
@@ -49,7 +50,7 @@
       <div class="w-100">
         <div class="card">
           <h4 class="card-header bg-dark text-light d-flex align-items-center">
-          11 am <button id="create-task" class="btn btn-block btn-add bg-danger">
+          11 am <button id="create-task" class="btn btn-block btn-add bg-danger" onclick="echoInput(this)">
           <span class="oi oi-plus mr-2"></span>Add Task
           </button>
           </h4>

@@ -9,9 +9,13 @@ setInterval(function(){
     currentDay.textContent = timeReadable;
 }, 1000);
 
-function enterText(){
+function echoInput(task_btn){
+    // get task input
+    let task_input = task_btn.previousElementSibling;
+    //read and log task from input box
+    console.log(task_input.value)
+        
 
-}
 
 
 // setup rows to have enterable text
