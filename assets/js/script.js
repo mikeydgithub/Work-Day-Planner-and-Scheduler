@@ -1,5 +1,4 @@
 var currentDay = document.querySelector("#currentDay");
-var listToDo = document.getElementById("#listToDo");
 
 
 // creating a continous clock for currentDay
@@ -9,10 +8,20 @@ setInterval(function(){
     currentDay.textContent = timeReadable;
 }, 1000);
 
-function enterText(){
+// setup rows to have enterable text
 
+function addItem(){
+    var ul = document.getElementById("list-ToDo");
+    var candidate = document.getElementById("candidate");
+    var li = document.createElement("li");
+    li.setAttribute('id', candidate.value);
+    li.appendChild (document.createTextNode(candidate.value));
+    ul.appendChild(li);
 }
 
-
-// setup rows to have enterable text
-//listToDo.addEventListener('click', enterText);
+function removeItem(){
+    var ul = document.getElementById("list-ToDo");
+    var candidate = document.getElementById("candidate");
+    var item = document.getElementById(candidate.value);
+    ul.removeChild(item);
+}
