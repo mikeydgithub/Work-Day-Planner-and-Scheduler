@@ -17,24 +17,28 @@ function tickClock(){
 
 // setup rows to have enterable text
 
-function addItem(addTaskBtn){
-    //get card button was clicked from
+function addTask(addTaskBtn){
+    //Get card button was clicked from
     var card = addTaskBtn.closest(".card");
 
     //Get task list container
     var ul = card.querySelector("ul");
-
-    //Get user task input
+ 
     var taskInput = card.querySelector("input");
+    if(!taskInput.value) { alert("Please enter a value for your task!"); return; }
 
-    //Build dom task
-    buildTask(card, taskInput.value, ul);
+    //Build task
+    var taskId = card.id + "-" + ul.querySelectorAll("li").length;
+    var task = { "taskId" : taskId, "value" : taskInput.value }
+
+    //Build element from task
+    buildTask(card, task, ul);
 
     //Save to local storage
-    saveTask(card.id, taskInput.value);
+    saveTask(card.id, task);
 }
 
-function removeItem(removeTaskBtn){
+function removeTask(removeTaskBtn){
     var card = removeTaskBtn.closest(".card");
     var taskItem = removeTaskBtn.closest("li");
     var taskSpan = taskItem.querySelector("span");
@@ -42,7 +46,7 @@ function removeItem(removeTaskBtn){
     var taskItems = localStorage.getItem(card.id);
     var taskArray = taskItems ? JSON.parse(taskItems) : [];
     var taskIndex = taskArray.findIndex(
-                    taskValue => taskValue.toLowerCase() == taskSpan.innerText.toLowerCase()
+                    task => task.taskId == taskItem.id
                     );
     if (taskIndex > -1) {
         taskArray.splice(taskIndex, 1);
@@ -78,11 +82,21 @@ function editTask(taskElement) {
     toggleTask(taskElement);
 }
 
-function saveTask(taskId, taskValue) {
-    var taskItems = localStorage.getItem(taskId);
+function saveTask(cardId, task) {
+    var taskItems = localStorage.getItem(cardId);
     var taskArray = taskItems ? JSON.parse(taskItems) : [];
-    taskArray.push(taskValue);
-    localStorage.setItem(taskId, JSON.stringify(taskArray));
+
+    var taskIndex = taskArray.findIndex(
+        storedTask => storedTask.taskId == task.taskId
+    );
+    if(taskIndex != -1) {
+        taskArray[taskIndex] = task;
+    }
+    else {
+        taskArray.push(task);
+    }
+ 
+    localStorage.setItem(cardId, JSON.stringify(taskArray));
 }
 
 function loadTasks(cardId){
@@ -99,21 +113,21 @@ function loadTasks(cardId){
     var ul = card.querySelector("ul");
 
     //Build dom task(s)
-    taskArray.forEach(element => {
-        buildTask(card, element, ul); 
+    taskArray.forEach(task => {
+        buildTask(card, task, ul); 
     });
 }
 
-function buildTask(card, taskValue, ul){
+function buildTask(card, task, ul){
     //Create list item with task value and add to card's list
     var li = document.createElement("li");
-    var taskId = card.id + "-" + taskValue;
-    li.setAttribute('id', taskId);
+
+    li.setAttribute('id', task.taskId);
     li.classList.add("center-flex");
 
     //Add task input to list item
     var taskSpan = document.createElement("span");
-    taskSpan.appendChild(document.createTextNode(taskValue));
+    taskSpan.appendChild(document.createTextNode(task.value));
     taskSpan.onclick = function () {
         editTask(taskSpan);
     }
@@ -128,8 +142,10 @@ function buildTask(card, taskValue, ul){
         //Make editabled by span again
         toggleTask(taskSpan);
         taskSpan.onclick = function() { editTask(taskSpan); }
+
         //Update storage
-        saveTask(card.id, taskSpan.innerText);
+        task.value = taskSpan.innerText;
+        saveTask(card.id, task);
     }
     li.appendChild(saveBtn);
 
@@ -138,7 +154,7 @@ function buildTask(card, taskValue, ul){
     delBtn.innerText = "Remove Task";
     delBtn.classList.add("btn");
     delBtn.classList.add("btn-remove");
-    delBtn.onclick = function() { removeItem(delBtn); }
+    delBtn.onclick = function() { removeTask(delBtn); }
     li.appendChild(delBtn);
 
     //Add to list container
@@ -151,7 +167,7 @@ function buildCard(time){
                     <h3 class = "bg-primary text-uppercase fs-6"> ${timesplit[0]} <i>${timesplit[1]}</i>
                         <div class="center-flex">
                             <input type = "text" placeholder = "Enter Task Here" id="txt">
-                            <button onclick="addItem(this)" class="btn btn-add" type="button">ADD TASK</button>
+                            <button onclick="addTask(this)" class="btn btn-add" type="button">ADD TASK</button>
                         </div>
                         <ul id="list-ToDo">
                         </ul>
@@ -187,8 +203,6 @@ function colorTasks(time){
         cardDate.setMinutes(0);
 
         var hourDiff = (time - cardDate) / hour;
-
-        console.log(card.id + " " + hourDiff);
 
         if(hourDiff >= 1 && hourDiff < 2) {
             card.style.backgroundColor = "red";
