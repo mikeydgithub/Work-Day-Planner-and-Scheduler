@@ -4,7 +4,7 @@
 As an employee with a busy schedule you want to add important events to a daily planner.
 This will make you manage your time effectively.
 
-# Build With
+# Built With
 * Javascript
 * HTML
 * CSS
