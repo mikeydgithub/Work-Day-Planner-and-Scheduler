@@ -1,33 +1,24 @@
-# Work Day Scheduler Starter Code
+## Work Day Scheduler
 
 # Purpose
-AS AN employee with a busy schedule
-I WANT to add important events to a daily planner
-SO THAT I can manage my time effectively
+As an employee with a busy schedule you want to add important events to a daily planner.
+This will make you manage your time effectively.
 
-# Acceptance Criteria
-GIVEN I am using a daily planner to create a schedule
+# Build With
+* Javascript
+* HTML
+* CSS
 
-# Issue 1
-WHEN I open the planner
-THEN the current day is displayed at the top of the calendar --- Done.
+# How it works
+* When you open your planner, you can see the current date and time.
+* When you click into a time card, you can enter a time event.
+* When you set an event you can save it, remove it, or make edits.
+* When a task is saved, the browser can be refreshed and keep the saved task.
+* When a task is within it's current time slot and all time slots in the future, the border of the card     will be green. If it is past due by 1 hour, it turns red. If the event is 2 or more hours in the past the card will be gray.
 
-# Issue 2
-WHEN I scroll down
-THEN I am presented with time blocks for standard business hours
+# Result
+* A working planner for the busy individual to keep track of tasks with appropriate due times and color indications.
 
-# Issue 3
-WHEN I view the time blocks for that day
-THEN each time block is color-coded to indicate whether it is in the past, present, or future
-
-# Issue 4
-WHEN I click into a time block
-THEN I can enter an event
-
-# Issue 5
-WHEN I click the save button for that time block
-THEN the text for that event is saved in local storage
-
-# Issue 6
-WHEN I refresh the page
-THEN the saved events persist
+# Website
+* https://mikeydgithub.github.io/Work-Day-Planner-and-Scheduler/
+![workdayplannerss](https://user-images.githubusercontent.com/94988620/151891750-de90aa17-ea2d-42e1-b48d-ef319b9ccf55.JPG)
