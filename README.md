@@ -22,3 +22,7 @@ This will make you manage your time effectively.
 # Website
 * https://mikeydgithub.github.io/Work-Day-Planner-and-Scheduler/
 ![workdayplannerss](https://user-images.githubusercontent.com/94988620/151891750-de90aa17-ea2d-42e1-b48d-ef319b9ccf55.JPG)
+
+# Made by
+* Michael Diamond
+* Edward Flowers (tutored and gave helpful instructions)
