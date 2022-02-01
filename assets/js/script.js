@@ -15,8 +15,7 @@ function tickClock(){
     colorTasks(now);
 }
 
-// setup rows to have enterable text
-
+//Add task element to card
 function addTask(addTaskBtn){
     //Get card button was clicked from
     var card = addTaskBtn.closest(".card");
@@ -38,24 +37,26 @@ function addTask(addTaskBtn){
     saveTask(card.id, task);
 }
 
+//Remove task element from card
 function removeTask(removeTaskBtn){
     var card = removeTaskBtn.closest(".card");
     var taskItem = removeTaskBtn.closest("li");
-    var taskSpan = taskItem.querySelector("span");
 
     var taskItems = localStorage.getItem(card.id);
     var taskArray = taskItems ? JSON.parse(taskItems) : [];
     var taskIndex = taskArray.findIndex(
                     task => task.taskId == taskItem.id
                     );
+    //Remove the task Id that we found and remove it from the local array
     if (taskIndex > -1) {
         taskArray.splice(taskIndex, 1);
     }
-
+    //Remove our previous ID and save a new task array value
     localStorage.setItem(card.id, JSON.stringify(taskArray));
     removeTaskBtn.parentElement.remove();
 }
 
+//Toggle 'contentEditable' attribute of target element
 function toggleEditable(element){
     if(element.contentEditable == "true"){
         element.contentEditable = "false";
@@ -67,6 +68,7 @@ function toggleEditable(element){
     }
 }
 
+//Toggle task's edit mode
 function toggleTask(taskElement){
     //Turn on/off editability for task input 
     var editable = toggleEditable(taskElement);
@@ -75,6 +77,7 @@ function toggleTask(taskElement){
     if(editable) { taskElement.focus(); }
 }
 
+//Turn on task editing
 function editTask(taskElement) {
     //Remove click event until save (Should be editable till saved) 
     taskElement.onclick = "";
@@ -82,30 +85,30 @@ function editTask(taskElement) {
     toggleTask(taskElement);
 }
 
+//Upserts task to localStorage
 function saveTask(cardId, task) {
     var taskItems = localStorage.getItem(cardId);
     var taskArray = taskItems ? JSON.parse(taskItems) : [];
-
+        // Find me the task in the array. If not add it.
     var taskIndex = taskArray.findIndex(
         storedTask => storedTask.taskId == task.taskId
     );
+
     if(taskIndex != -1) {
-        taskArray[taskIndex] = task;
+        taskArray[taskIndex] = task;     // Add to existing
     }
     else {
-        taskArray.push(task);
+        taskArray.push(task);     // If task is not found, we push to our array of tasks and add a new one
     }
  
     localStorage.setItem(cardId, JSON.stringify(taskArray));
 }
 
+//Populate task elements from localStorage into card
 function loadTasks(cardId){
     var taskItems = localStorage.getItem(cardId);
     var taskArray = taskItems ? JSON.parse(taskItems) : [];
 
-    console.log(taskArray);
-
-    //Build a list of task objects from data
     //get card
     var card = document.querySelector("#"+cardId);
 
@@ -118,6 +121,7 @@ function loadTasks(cardId){
     });
 }
 
+//Build task list item element
 function buildTask(card, task, ul){
     //Create list item with task value and add to card's list
     var li = document.createElement("li");
@@ -127,8 +131,8 @@ function buildTask(card, task, ul){
 
     //Add task input to list item
     var taskSpan = document.createElement("span");
-    taskSpan.appendChild(document.createTextNode(task.value));
-    taskSpan.onclick = function () {
+    taskSpan.appendChild(document.createTextNode(task.value)); //create text node and put into our span
+    taskSpan.onclick = function () { //when you click the span. edit task is called and edit our span
         editTask(taskSpan);
     }
     li.appendChild(taskSpan);
@@ -141,7 +145,7 @@ function buildTask(card, task, ul){
     saveBtn.onclick = function() {
         //Make editabled by span again
         toggleTask(taskSpan);
-        taskSpan.onclick = function() { editTask(taskSpan); }
+        taskSpan.onclick = function() { editTask(taskSpan); } 
 
         //Update storage
         task.value = taskSpan.innerText;
@@ -161,8 +165,9 @@ function buildTask(card, task, ul){
     ul.appendChild(li);
 }
 
+//Set up template and build cards with a unique ID //$ (string interporlation - subsitute value, time = 9am,10am,11am,etc..) //regex pattern matching within a string
 function buildCard(time){
-    var timesplit = time.split(/(\d+)/).filter(Boolean);
+    var timesplit = time.split(/(\d+)/).filter(Boolean); //digit quantifier. give me more numbers.
     var html = `<div id="task-${time}" data-hour="${timesplit[0]}" data-postfix="${timesplit[1]}" class="card">  
                     <h3 class = "bg-primary text-uppercase fs-6"> ${timesplit[0]} <i>${timesplit[1]}</i>
                         <div class="center-flex">
@@ -174,35 +179,40 @@ function buildCard(time){
                     </h3>
                 </div>`;
     var template = document.createElement('template');
-    html = html.trim();
+    html = html.trim(); //remove any leading or trailing white space
     template.innerHTML = html;
     
-    var body = document.querySelector("body");
-    body.appendChild(template.content.firstChild);
+    var body = document.querySelector("body"); //Get document body
+    body.appendChild(template.content.firstChild); //Add card as child
 }
 
-function buildCards(startHour, duration){
+//Build collection of cards from startHour -> startHour + duration
+function buildCards(startHour, duration){ //start hour "9am", duration is how many cards - window.load on line 220, (9,9 builds you 9am to 5pm)
     for(var cardHour = startHour; cardHour < (startHour + duration); cardHour++){
         var time = (cardHour > 12 ? cardHour - 12 : cardHour) + (cardHour >= 12 ? "pm" : "am");
-        var cardId = "task-" + time;  
+        var cardId = "task-" + time;   
         buildCard(time);
         loadTasks(cardId);
     }
     tickClock();
 }
 
-function colorTasks(time){
+//Color code card background based on current timestamp
+//Card(s) within current hour and future times are green
+//Card from previous hour is red
+//Card(s) 2 or more hours old are gray
+function colorTasks(time){ //every time we tick the clock, we are passing the time into it.
     var cards = document.querySelectorAll(".card");
     cards.forEach(card => {
         var cardHour = card.getAttribute("data-hour");
-        cardHour = parseInt(cardHour)
-        cardHour = card.getAttribute("data-postfix") == "pm" && cardHour != 12 ? 12 + cardHour : cardHour;
+        cardHour = parseInt(cardHour); //parse the card hour as an integer
+        cardHour = card.getAttribute("data-postfix") == "pm" && cardHour != 12 ? 12 + cardHour : cardHour;//to make it the 24 hour variant
         
         var cardDate = new Date();
         cardDate.setHours(cardHour);
         cardDate.setMinutes(0);
 
-        var hourDiff = (time - cardDate) / hour;
+        var hourDiff = (time - cardDate) / hour; //take difference between current time and card time in hours
 
         if(hourDiff >= 1 && hourDiff < 2) {
             card.style.backgroundColor = "red";
